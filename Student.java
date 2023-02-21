@@ -1,132 +1,220 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
-class Student extends Frame implements ActionListener
-{
-	Label lsname, lsrollno, lsclass, lgander, lsbg, lsmob, lsadrs;
-	CheckboxGroup gander;
-	Checkbox male, female, trainpass;
-	Choice csclass;
-	TextField tfsname, tfsrollno, tfsmob;
-	TextArea tasadrs;
-	Button submit;
+public class HostelManagementSystem extends Frame implements ActionListener {
+    private ArrayList<Student> students = new ArrayList<Student>();
+    private Hostel hostel = new Hostel(100, "Single", 50);
 
-	TextArea display_details;
+    private Label nameLabel, ageLabel, genderLabel, phoneLabel, roomLabel;
+    private TextField nameField, ageField, genderField, phoneField, roomField;
+    private Button addButton, removeButton, updateButton, displayButton, searchButton;
 
-	Student()
-	{
-		lsname   = new Label("Name : ");
-		lsrollno = new Label("Roll No : ");
-		lsclass  = new Label("Class : ");
-		lgander  = new Label("Gander : ");
-		lsbg     = new Label("Blood Group : ");
-		lsmob    = new Label("Mobile : ");
-		lsadrs   = new Label("Address : ");
+    public HostelManagementSystem() {
+        setLayout(new GridLayout(6, 1));
 
-		gander = new CheckboxGroup();  
-        male   = new Checkbox("Male", gander, false);   
-        female = new Checkbox("Female", gander, false);  
+        nameLabel = new Label("Name:");
+        add(nameLabel);
+        nameField = new TextField(20);
+        add(nameField);
 
-        trainpass = new Checkbox("Apply For Train Concession");
+        ageLabel = new Label("Age:");
+        add(ageLabel);
+        ageField = new TextField(20);
+        add(ageField);
 
-        csclass = new Choice();  
-        csclass.add("BSc IT");  
-        csclass.add("BSc CS");  
-        csclass.add("BCA");  
-        csclass.add("MSc IT");  
-        csclass.add("MSc CS");
-        csclass.add("MCA");
+        genderLabel = new Label("Gender:");
+        add(genderLabel);
+        genderField = new TextField(20);
+        add(genderField);
 
-		tfsname   = new TextField();
-		tfsrollno = new TextField();
-		tfsmob    = new TextField();
+        phoneLabel = new Label("Phone:");
+        add(phoneLabel);
+        phoneField = new TextField(20);
+        add(phoneField);
 
-		tasadrs = new TextArea("", 2 , 100 , TextArea.SCROLLBARS_NONE);
+        roomLabel = new Label("Room No.:");
+        add(roomLabel);
+        roomField = new TextField(20);
+        add(roomField);
 
-		submit  = new Button("Submit");
+        addButton = new Button("Add Student");
+        addButton.addActionListener(this);
+        add(addButton);
 
-		display_details = new TextArea("", 2 , 100 , TextArea.SCROLLBARS_NONE);
-		display_details.setEditable(false);
+        removeButton = new Button("Remove Student");
+        removeButton.addActionListener(this);
+        add(removeButton);
 
-		lsname.setBounds(10, 30, 50, 20);
-		tfsname.setBounds(70, 30, 150, 20);
-		
-		lsrollno.setBounds(240, 30, 50, 20);
-		tfsrollno.setBounds(300, 30, 150, 20);
-		
-		lsclass.setBounds(10, 60, 50, 20);
-		csclass.setBounds(70, 60, 150, 20);
-		
-		lgander.setBounds(240, 60, 50, 20);
-		male.setBounds(300, 60, 50, 20);
-		female.setBounds(360, 60, 50, 20);
-		
-		lsmob.setBounds(10, 90, 50, 20);
-		tfsmob.setBounds(70, 90, 150, 20);
+        updateButton = new Button("Update Student");
+        updateButton.addActionListener(this);
+        add(updateButton);
 
-		trainpass.setBounds(240, 90, 150, 20);
+        displayButton = new Button("Display Details");
+        displayButton.addActionListener(this);
+        add(displayButton);
 
-		lsadrs.setBounds(10, 120, 50, 20);
-		tasadrs.setBounds(70, 120, 380, 70);
+        searchButton = new Button("Search Student");
+        searchButton.addActionListener(this);
+        add(searchButton);
 
-		submit.setBounds(10, 200, 440, 30);
+        setTitle("Hostel Management System");
+        setSize(800, 800);
+        setVisible(true);
+    }
 
-		display_details.setBounds(10, 240, 440, 130);
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == addButton) {
+            String name = nameField.getText();
+            int age = Integer.parseInt(ageField.getText());
+            String gender = genderField.getText();
+            String phone = phoneField.getText();
+            int roomNo = Integer.parseInt(roomField.getText());
+            Student student = new Student(name, age, gender, phone, roomNo);
+            students.add(student);
+            hostel.addOccupancy(roomNo);
+            System.out.println("Student added successfully!");
+        } else if (e.getSource() == removeButton) {
+            int roomNo = Integer.parseInt(roomField.getText());
+            for (int i = 0; i < students.size(); i++) {
+                if (students.get(i).getRoomNo() == roomNo) {
+                    students.remove(i);
+                    hostel.removeOccupancy(roomNo);
+                    System.out.println("Student removed successfully!");
+                    break;
+                }
+            }
+        } else if (e.getSource() == updateButton) {
+            int roomNo = Integer.parseInt(roomField.getText());
+            for (int i = 0; i < students.size(); i++) {
+                if (students.get(i).getRoomNo() == roomNo) {
+                    students.get(i).setName(nameField.getText());
+                    students.get(i).setAge(Integer.parseInt(ageField.getText()));
+                    students.get(i).setGender(genderField.getText());
+                    students.get(i).setPhone(phoneField.getText());
+                    System.out.println("Student details updated successfully!");
+                    break;
+                }
+            }
+        } else if (e.getSource() == displayButton) {
+            System.out.println("Hostel Details:");
+            System.out.println("No. of rooms: " + hostel.getNoOfRooms());
+           
+            System.out.println("Room type: " + hostel.getRoomType());
+            System.out.println("Occupancy: " + hostel.getOccupancy());
+            System.out.println("Available rooms: " + hostel.getAvailableRooms());
+            System.out.println("Student Details:");
+            for (Student student : students) {
+                System.out.println("Name: " + student.getName());
+                System.out.println("Age: " + student.getAge());
+                System.out.println("Gender: " + student.getGender());
+                System.out.println("Phone: " + student.getPhone());
+                System.out.println("Room No.: " + student.getRoomNo());
+            }
+        } else if (e.getSource() == searchButton) {
+            int roomNo = Integer.parseInt(roomField.getText());
+            for (int i = 0; i < students.size(); i++) {
+                if (students.get(i).getRoomNo() == roomNo) {
+                    nameField.setText(students.get(i).getName());
+                    ageField.setText(Integer.toString(students.get(i).getAge()));
+                    genderField.setText(students.get(i).getGender());
+                    phoneField.setText(students.get(i).getPhone());
+                    break;
+                }
+            }
+        }
+    }
 
-		add(lsname);
-		add(lsrollno);
-		add(lsclass);
-		add(lgander);
-		add(lsbg);
-		add(lsadrs);
-		add(lsmob);
-
-		add(male);
-		add(female);
-
-		add(csclass);
-
-		add(tfsname);
-		add(tfsrollno);
-		add(tasadrs);
-		add(tfsmob);
-
-		add(trainpass);
-
-		add(submit);
-
-		add(display_details);
-
-		submit.addActionListener(this);
-
-		setTitle("Students Details");
-		setSize(460,390);
-		setLayout(null);
-		setVisible(true);
-
-		addWindowListener(new WindowAdapter()
-		{  
-            public void windowClosing(WindowEvent e)
-            {  
-                dispose();  
-            }  
-        });
-	}
-
-	public void actionPerformed(ActionEvent e)
-	{
-		if(e.getSource()==submit)
-		{
-			String tp = trainpass.getState() ? "Applied for Train Concession" : "Not Applied for Train Concession";
-
-			String sdetails = " ***** Students Details *****\n Name : " + tfsname.getText() + "\n Roll No. :" + tfsrollno.getText() + "\n Class : " + csclass.getSelectedItem() + "\n Gander : " + gander.getSelectedCheckbox().getLabel() + "\n Mobile : " + tfsmob.getText() + "\n Train Pass : " + tp + "\n Address : " + tasadrs.getText();
-
-			display_details.setText(sdetails);
-		}
-	}
-
-	public static void main(String[] args)
-	{
-		new Student();
-	}
+    public static void main(String[] args) {
+        HostelManagementSystem hostelManagementSystem = new HostelManagementSystem();
+    }
 }
+
+class Hostel {
+    private int noOfRooms;
+    private String roomType;
+    private int occupancy;
+
+    public Hostel(int noOfRooms, String roomType, int occupancy) {
+        this.noOfRooms = noOfRooms;
+        this.roomType = roomType;
+        this.occupancy = occupancy;
+    }
+
+    public int getNoOfRooms() {
+        return noOfRooms;
+    }
+
+    public String getRoomType() {
+        return roomType;
+    }
+
+    public int getOccupancy() {
+        return occupancy;
+    }
+
+    public int getAvailableRooms() {
+        return noOfRooms - occupancy;
+    }
+
+    public void addOccupancy(int roomNo) {
+        occupancy++;
+    }
+
+    public void removeOccupancy(int roomNo) {
+        occupancy--;
+    }
+}
+
+class Student {
+    private String name;
+    private int age;
+    private String gender;
+    private String phone;
+    private int roomNo;
+
+    public Student(String name, int age, String gender, String phone, int roomNo) {
+        this.name = name;
+        this.age = age;
+        this.gender = gender;
+        this.phone = phone;
+        this.roomNo = roomNo;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public int getRoomNo() {
+        return roomNo;
+    }
+}
+
