@@ -4,10 +4,6 @@ import java.applet.*;
 import java.util.ArrayList;
 
 
-
-
-
-
 class HostelManagementSystem extends Frame implements ActionListener
  {
    
