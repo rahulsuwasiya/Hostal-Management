@@ -3,7 +3,7 @@ import java.awt.event.*;
 import java.applet.*;
 import java.util.ArrayList;
 
-
+//Rahul Suwasiya
 class HostelManagementSystem extends Frame implements ActionListener
  {
    
